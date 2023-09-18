@@ -101,7 +101,7 @@
    "imagen_perfil": "https://www.example.com/perfil_usuario.jpg",
   "biografia": "Estudiante apasionado por la programación.",
   "cursos_matriculados": [ObjectId("curso_id1"), ObjectId("curso_id2")],
-  "rol": "estudiante" // o "instructor"
+  "rol": "camper" // o "trainer"
 }
 ```
 
