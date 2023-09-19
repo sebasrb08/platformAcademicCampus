@@ -1,8 +1,9 @@
-// passportHelper.js
+import { connect, closeConnection} from '../database/connection.js'
 import passport from "passport";
 import { Strategy as DiscordStrategy} from 'passport-discord'
 import { config } from "dotenv";
-import { log } from "console";
+import { ObjectId } from 'mongodb';
+
 
 config()
 
@@ -12,18 +13,53 @@ passport.use(new DiscordStrategy({
     clientSecret: process.env.DISCORD_CLIENT_SECRET,
     callbackURL: '/auth/redirect',
     scope: ['identify', 'guilds', 'email']
-}, (accestoken, refreshtoken, profile, done) =>{
+}, async (accestoken, refreshtoken, profile, done) =>{
   try {
-    console.log(profile);
+
+    const db=await connect()
+    const usuarios=db.collection("usuarios")
+    const user=await usuarios.findOne({discord_id:profile.id})
+    if (user) return done(null, user);
+
+    const isCamper=profile.guilds.some((guild)=> guild.id==='1101581994355347526')
+    if (!isCamper){
+      return done("Usuario no pertenece a campuss", null)
+    }
+
+    const newUser={
+      discord_id:profile.id,
+      nombre_usuario:profile.username,
+      correo_electronico:profile.email
+    }
+    
+  
+    const {insertedId}=await usuarios.insertOne(newUser)
+   const result={
+    _id:insertedId, 
+    info:newUser
+  }
+
+    done(null, result)
+
+      
   } catch (error) {
     console.error(error);
     return done(error, null)
+  }finally{
+    await closeConnection()
   }
 }))
 
 
-passport.serializeUser((user, done) => done(null, user.id));
+passport.serializeUser((user, done) =>{
+  done(null, user._id);
+})
 
-passport.deserializeUser((user, done) => done(null, user));
+passport.deserializeUser(async (id, done) =>{
+  const db=await connect()
+  const usuarios=db.collection('usuarios')
+  const user=await usuarios.findOne({_id:new ObjectId(id)})
+   done(null, user);
+});
 
 export default passport;

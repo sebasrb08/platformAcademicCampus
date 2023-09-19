@@ -3,7 +3,9 @@ import { config } from 'dotenv'
 
 config()
 
-const uri = `mongodb+srv://${process.env.ATLAS_USER}:${process.env.ATLAS_PASSWORD}@cluster0.e7umrrf.mongodb.net/`
+
+
+const uri = `mongodb+srv://${process.env.ATLAS_USER}:${process.env.ATLAS_PASSWORD}@clusterauthenticacion.lobajpy.mongodb.net/`
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -19,7 +21,7 @@ export async function connect () {
     const database = client.db('platform_academic_campus')
     return database
   } catch (error) {
-    console.log(error)
+    console.log('Error  coonect the database connection  ' + error.message)
   }
 }
 

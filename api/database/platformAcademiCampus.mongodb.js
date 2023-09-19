@@ -88,7 +88,7 @@ db.createCollection('cursos', {
     validator: {
       $jsonSchema: {
         bsonType: 'object',
-        required: ['_id', 'discord_id', 'nombre_usuario', 'correo_electronico','rol'],
+        required: ['_id', 'discord_id', 'nombre_usuario', 'correo_electronico'],
         properties: {
           _id: {
             bsonType: 'objectId',
