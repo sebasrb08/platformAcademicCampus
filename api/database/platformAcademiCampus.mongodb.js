@@ -118,8 +118,8 @@ db.createCollection('cursos', {
             bsonType: 'array',
             description: 'Los cursos matriculados son de tipo array',
             items: {
-              bsonType: 'objectId',
-              description: 'Cada elemento en cursos_matriculados debe ser de tipo ObjectId'
+              bsonType: 'string',
+              description: 'Cada elemento en cursos matriculados debe ser un string'
             }
           },
           rol: {
